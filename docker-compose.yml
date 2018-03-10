@@ -1,0 +1,38 @@
+version: '3'  # version of compose format 
+
+services:
+  
+  web:
+    build: ./DockerMongo
+    command: python3 -u flask_brevets.py
+    ports:
+      - 5000:5000
+    volumes:
+      - .:/index
+    links:
+      - db  
+  db:
+    image: mongo:3.0.2
+    command: --smallfiles
+
+  laptop-service:
+    build: ./laptop  
+    volumes:
+      - ./laptop:/usr/src/app 
+    ports:
+      - 5001:80  # host:container
+
+  website:
+    image: php:apache  
+    volumes:
+      - ./website:/var/www/html 
+    ports:
+      - 5002:80  # host:container
+    depends_on:
+      - laptop-service  # website is not going to work unless laptop-service is running
+
+
+
+  
+
+  
